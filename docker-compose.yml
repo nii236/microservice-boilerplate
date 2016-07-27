@@ -1,0 +1,54 @@
+version: '2'
+services:
+  api:
+    image: nii236/micro-with-plugins:0.1
+    command: --registry nats --registry_address nats:4222 --transport nats --transport_address nats:4222 --broker nats --broker_address nats:4222 -- api
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - nats
+  sidecar:
+    image: nii236/micro-with-plugins:0.1
+    command: --registry nats --registry_address nats:4222 --transport nats --transport_address nats:4222 --broker nats --broker_address nats:4222 -- sidecar
+    restart: always
+    ports:
+      - "8081:8081"
+    depends_on:
+      - nats
+  web:
+    image: nii236/micro-with-plugins:0.1
+    command: --registry nats --registry_address nats:4222 --transport nats --transport_address nats:4222 --broker nats --broker_address nats:4222 -- web
+    restart: always
+    ports:
+    - "8082:8082"
+    depends_on:
+    - nats
+  bot:
+    image: nii236/micro-with-plugins:0.1
+    command: --registry nats --registry_address nats:4222 --transport nats --transport_address nats:4222 --broker nats --broker_address nats:4222 -- sidecar
+    restart: always
+    depends_on:
+    - nats
+  nats:
+    image: nii236/nats-streaming-server:0.1
+    ports:
+    - "4222:4222"
+    - "8222:8222"
+  influx:
+    image: influxdb:1.0.0-beta3-alpine
+    ports:
+    - "8083:8083"
+    - "8086:8086"
+  db:
+    image: postgres:9.6
+    environment:
+      - POSTGRES_PASSWORD=develop
+      - POSTGRES_USER=develop
+      - POSTGRES_DB=take5
+    ports:
+      - "5432:5432"
+  redis:
+    image: redis:3.2.1-alpine
+    ports:
+      - "6379:6379"

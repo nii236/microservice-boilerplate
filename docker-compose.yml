@@ -26,7 +26,7 @@ services:
     - nats
   bot:
     image: nii236/micro-with-plugins:0.2
-    command: --registry nats --registry_address nats:4222 --transport nats --transport_address nats:4222 --broker nats --broker_address nats:4222 -- bot
+    command: --registry nats --registry_address nats:4222 --transport nats --transport_address nats:4222 --broker nats --broker_address nats:4222 -- bot --inputs slack --slack_token=SLACK_TOKEN
     restart: always
     depends_on:
     - nats
